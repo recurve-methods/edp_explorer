@@ -1,0 +1,102 @@
+{
+	"populations": [
+		{
+			"label": "25000__low_var",
+			"rescale": true,
+			"n_meters": 25000,
+			"random_seed": 1,
+			"scaling": {
+				"lognormal_mean": 1.5,
+				"lognormal_sigma": 0.6,
+				"gaussian_mean": 0,
+				"gaussian_sigma": 1				
+			}
+		},
+		{
+			"label": "25000__high_var",
+			"rescale": true,
+			"n_meters": 25000,
+			"random_seed": 1,
+			"scaling": {
+				"lognormal_mean": 1.5,
+				"lognormal_sigma": 1.0,
+				"gaussian_mean": 0,
+				"gaussian_sigma": 1				
+			}
+		},
+		{
+			"label": "10000__low_var",
+			"rescale": true,
+			"n_meters": 10000,
+			"random_seed": 1,
+			"scaling": {
+				"lognormal_mean": 1.5,
+				"lognormal_sigma": 0.6,
+				"gaussian_mean": 0,
+				"gaussian_sigma": 1				
+			}
+		},
+		{
+			"label": "10000__high_var",
+			"rescale": true,
+			"n_meters": 10000,
+			"random_seed": 1,
+			"scaling": {
+				"lognormal_mean": 1.5,
+				"lognormal_sigma": 1.0,
+				"gaussian_mean": 0,
+				"gaussian_sigma": 1				
+			}
+		},
+		{
+			"label": "5000__low_var",
+			"rescale": true,
+			"n_meters": 5000,
+			"metadata_filters": [],
+			"random_seed": 1,
+			"scaling": {
+				"lognormal_mean": 1.5,
+				"lognormal_sigma": 0.6,
+				"gaussian_mean": 0,
+				"gaussian_sigma": 1				
+			}
+		},
+		{
+			"label": "5000__high_var",
+			"rescale": true,
+			"n_meters": 5000,
+			"random_seed": 1,
+			"scaling": {
+				"lognormal_mean": 1.5,
+				"lognormal_sigma": 1.0,
+				"gaussian_mean": 0,
+				"gaussian_sigma": 1				
+			}
+		},
+		{
+			"label": "1000__low_var",
+			"rescale": true,
+			"n_meters": 1000,
+			"random_seed": 1,
+			"scaling": {
+				"lognormal_mean": 1.5,
+				"lognormal_sigma": 0.6,
+				"gaussian_mean": 0,
+				"gaussian_sigma": 1				
+			}
+		},
+		{
+			"label": "1000__high_var",
+			"rescale": true,
+			"n_meters": 1000,
+			"random_seed": 1,
+			"scaling": {
+				"lognormal_mean": 1.5,
+				"lognormal_sigma": 1.0,
+				"gaussian_mean": 0.0,
+				"gaussian_sigma": 1				
+			}
+		}
+	]
+}
+
