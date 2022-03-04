@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  dash_app:
+    build:
+      dockerfile: LocalDockerfile
+      context: . 
+    ports:
+      - "8050:8050"
+    image: dash_app
+    entrypoint: python app.py
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+
+
+  db:
+    image: postgres:10.1-alpine
+    environment:
+      - POSTGRES_DB=edo
+      - POSTGRES_USER=edo
+      - POSTGRES_PASSWORD=edo
+    ports:
+      - "${HOST_PORT_POSTGRES:-5432}:5432"
+
+
+  data_setup:
+    image: dash_app
+    command: python data_setup.py
+    depends_on:
+      - dash_app
+      - db
+    volumes:
+      - .:/app
+

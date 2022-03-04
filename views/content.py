@@ -39,37 +39,6 @@ def content_layout(logos):
     content = html.Div(
         [
         nav("/load-shape"),
-    
-        dbc.Modal(
-            [
-                dbc.ModalHeader("Upload file"),
-                
-                html.Div("Upload functionality is not currently available.", style={"margin": "10px"}),
-                html.Div([
-                    "Please contact the Recurve product team using ",
-                    html.A("this contact form ", href="https://edp.recurve.com/contact.html"),
-                    " for further information or updates. "
-                    ], style={"margin": "10px"}),
-                # dbc.ModalBody("""Upload a .csv file with time-series meter data to use in the EDP Explorer.  
-                #  The file must be in "long" format with the following three columns:"""),
-                # html.Ul([
-                #     html.Li("`hour`, the hour of day (0 through 23)"),
-                #     html.Li("`meter_id`, a string to identify meters"),
-                #     html.Li("`value`, a numerical reading")
-                #     ]) ,                
-                # du.Upload(
-                #     id='dash-uploader',
-                #     max_file_size=128,
-                #     filetypes=['csv'],
-                #     upload_id=uuid.uuid1()
-                #  ),
-                # html.Div(id='output_data_upload'),
-                dbc.ModalFooter(
-                    dbc.Button("CLOSE BUTTON", id="close", className="ml-auto")
-                ),
-            ],
-            id="file_load_modal",
-        ),
         dcc.Store(id='data_store'),
             html.Div([
 
@@ -80,14 +49,15 @@ def content_layout(logos):
 
                         
                         html.Div([
-                            html.Div("Source", className="padded"),                             
-
-                            dcc.RadioItems(
-                                    options=[{'label': 'Pre-built', 'value': 'pre_built'},
-                                             {'label': 'File upload', 'value': 'file_upload'}],
-                                    id='population_source',  
-                                    inputStyle = {"margin": "0 10px 0 0"},
-                                    value="pre_built", className="padded"),                            
+                            html.Div([
+                                html.Div("Population", className="padded"),                                             
+                                dcc.Dropdown(
+                                    id='population',                
+                                    multi=False,
+                                    options=[],    
+                                    clearable=False,
+                                    value=" (loading) ", className="padded")], id="prebuilt_population_container"),                            
+                                                     
                             html.Div([                       
                                 html.Div([
                                     html.Div("Number of meters: ", className="padded"),
@@ -100,21 +70,7 @@ def content_layout(logos):
                             ])                
                             ], style={'display': 'inline-block', 'width': '50%'}),
 
-                        html.Div([
-
-                            html.Div([
-                                html.Div("Prebuilt population", className="padded"),                                             
-                                dcc.Dropdown(
-                                    id='population',                
-                                    multi=False,
-                                    options=[],    
-                                    clearable=False,
-                                    value=" (loading) ", className="padded")], id="prebuilt_population_container"),
-                            
-
-                            html.Div([
-                                html.Button("Upload file",id='upload_file', n_clicks=0, style={"margin": "10px 0 10px 0"})
-                                ], id="file_upload_population_container"),
+                        html.Div([                                                                                    
                             html.Div("No. of points to plot:"),
                             dcc.Dropdown(
                                 id='points',                

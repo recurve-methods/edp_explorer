@@ -1,22 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-
-   Copyright 2021 Recurve Analytics Inc.
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-
-"""
 
 
 import pandas as pd
@@ -57,11 +38,15 @@ class DB:
 
 	def query(self, sql):
 		con = self.con()
+		#cur = con.cursor()
+		#print(sql)
 		con.execute(sql)
+		#con.commit()
 		con.close()
 
 	def query_df(self, sql):
 		con = self.con()
+		#print(sql)
 		df = pd.read_sql_query(sql, con)
 		con.close()
 		return df
@@ -116,6 +101,7 @@ def load_data(time_series_csv_path, value_col, datetime_col, index_col, populati
 	df = df.groupby(['meter_id', 'hour']).mean()['value'].reset_index()
 	db_client.load_df(df, 'meter_time_series_daily')
 
+	sleep(5)
 
 	generate_populations(population_json_path, db_client)
 

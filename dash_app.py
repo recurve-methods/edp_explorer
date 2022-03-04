@@ -1,37 +1,18 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-
-   Copyright 2021 Recurve Analytics Inc.
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-
-"""
 
 
 import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_uploader as du 
 import flask 
 
+#from views.sidebar import build_sidebar
 from views.content import content_layout
+#from views.file_load_modal import file_load_modal
 from views.about import about_layout
 
 from pathlib import Path
 from dash.dependencies import Input, Output, State
-
 from cache import Cacheable
 from population import PlottingPopulation
 from database import load_data
@@ -42,6 +23,9 @@ import plotly.graph_objs as go
 import os
 
 import numpy as np
+
+#from rq import Queue
+#from worker import conn
 
 external_stylesheets = [dbc.themes.BOOTSTRAP, "https://codepen.io/chriddyp/pen/bWLwgP.css"]
 container_layout = html.Div(
@@ -64,15 +48,18 @@ class App(Cacheable):
     def __init__(self, db_client, port=None):
         
         self.app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-        du.configure_upload(self.app, '/tmp/uploads')
         self.db_client = db_client
         self.data_loaded = False
+    #    self.queue = Queue(connection=conn)                
         self.app.layout = self.serve_layout
         super().__init__()
         self.clear_cache()
         self.react()
 
 
+    # def to_worker(self, func, *args, **kwargs):
+    #     job = self.queue.enqueue(func, job_timeout=10000, *args, **kwargs)
+    #     return job
 
     def logos(self):
         return [self.app.get_asset_url('doe.png'), self.app.get_asset_url('nrel.png'), 
@@ -136,7 +123,19 @@ class App(Cacheable):
             return pop.fifteen_fifteen()
            
 
-       
+        # @self.app.callback(
+        #     Output('four_eighty', 'children'),
+        #     [
+        #         Input('population', "value"), 
+        #         Input('high_outlier', 'value'),       
+        #         Input('quantiles', "value"), 
+        #     ]
+        #     )
+        # def update_four_eighty(population, high_outlier, quantile_cutoff):
+        #     pop = PlottingPopulation(self.db_client, population=population, high_outlier=high_outlier, n_points=24, quantile_cutoff=quantile_cutoff)
+        #     return pop.four_eighty()
+           
+        
         @self.app.callback(
             Output('avg_usage', 'children'),
             [
@@ -174,16 +173,7 @@ class App(Cacheable):
             else:
                 return {'display': 'block'}, dash.no_update
 
-        @self.app.callback(
-           Output(component_id='prebuilt_population_container', component_property='style'),
-           Output(component_id='file_upload_population_container', component_property='style'),           
-           [Input(component_id='population_source', component_property='value')])
-        def show_hide_element(source):
-            if source == 'pre_built':
-                return {'display': 'block'}, {'display': 'none'}
-            if source == 'file_upload':
-                return {'display': 'none'}, {'display': 'block'}
-
+  
 
         @self.app.callback(
             Output("page-content", "children"),
@@ -199,15 +189,7 @@ class App(Cacheable):
             else:
                 return "404"
 
-        @self.app.callback(
-            Output("file_load_modal", "is_open"),
-            [Input("upload_file", "n_clicks"), Input("close", "n_clicks")],
-            [State("file_load_modal", "is_open")],
-        )
-        def toggle_file_load_modal(n1, n2, is_open):
-            if n1 or n2:
-                return not is_open
-            return is_open
+       
 
         @self.app.callback(
             Output('usage_histogram', "figure"),    

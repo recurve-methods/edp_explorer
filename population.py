@@ -24,10 +24,7 @@ class Population:
 		self.label = label
 		self.db_client = db_client
 		self.rescale = rescale
-		if n_meters is None:
-			self.n_meters = None 
-		else:
-			self.n_meters = int(n_meters)
+		self.n_meters = int(n_meters)
 		self.scaling = scaling 
 		if self.rescale:
 			for f in ['lognormal_mean', 'lognormal_sigma', 'gaussian_mean', 'gaussian_sigma']:
@@ -40,10 +37,7 @@ class Population:
 		i = 0
 		logger.info("Generating meter population")
 		meter_ids = self.db_client.meter_ids()
-		if self.n_meters is not None:
-			output_meter_ids = meter_ids.sample(self.n_meters, replace=True)
-		else:
-			output_meter_ids = meter_ids
+		output_meter_ids = meter_ids.sample(self.n_meters, replace=True)
 		for m in output_meter_ids.meter_id.values:
 			df = self.db_client.time_series_daily(m)
 			df = self.transform(df)
@@ -65,7 +59,31 @@ class Population:
 			df['value'] = df['value'] * factor
 		return df
 
-	
+
+# class BuiltPopulation:
+
+# 	def __init__(self, db_client, label, high_outlier=False):
+# 		self.db_client = db_client
+# 		self.label = label 
+# 		self.high_outlier = high_outlier
+
+# 	def get(self):
+# 		df = self.db_client.query_df(f"select * from population where population='{self.label}'")
+# 		if self.high_outlier:
+# 			df = df 
+# 		return df
+
+# 	def resample_hours(self, df, n_points):
+# 		df['hour'] = df['hour'] // (24/n_points)
+# 		df = df.groupby(['population','meter_id','hour']).mean().reset_index()		
+# 		return df 
+
+# 	def private_load_shape(self, n_points, quantile_cutoff):
+# 		df = self.get()
+# 		df = self.resample_hours(df, n_points)
+# 		return PrivateLoadShape(df, index_column='meter_id', time_column='hour', value_column='value', 
+# 				quantile_cutoff_lower=0, quantile_cutoff_upper=1-quantile_cutoff)
+					
 
 
 class PlottingPopulation(Cacheable):
@@ -105,6 +123,7 @@ class PlottingPopulation(Cacheable):
 
 		df = self.load_shape().df 
 		return df.groupby('meter_id').value.mean().reset_index()
+		#return self.load_shape().mean_usage()
 
 
 	def avg_usage(self):
@@ -258,6 +277,7 @@ class PlottingPopulation(Cacheable):
 				return fig
 				
 			df = ls.privatize(epsilon)
+			#import pdb; pdb.set_trace()
 			fig = go.Figure([
 			go.Scatter(
 				name='Actual mean',
@@ -293,6 +313,7 @@ class PlottingPopulation(Cacheable):
 				hovermode="x",
 				showlegend=False,
 				height=350,
+			 #   width=640,
 				margin=dict(t=50)
 			)  
 		except Exception as e:
@@ -309,6 +330,26 @@ class PlottingPopulation(Cacheable):
 
 		return fig
 
+
+
+# 	def privatize_and_aggregate(self):
+# #		quantile_cutoffs = [0,0.1,0.2,0.3,0.4,0.5]
+# 		#points = [1,2,4,8,12,18,24]
+# 		for n_points in [2,8,12,18,24]:				
+# 			df = self.get()
+# 			df = self.resample_hours(df, n_points)
+# 			for quantile_cutoff in [0,0.01, 0.02, 0.03, 0.04, 0.05]:
+# 				for epsilon in np.logspace(start=-0.5, stop=2,num=100):
+# 					ls = PrivateLoadShape(df, index_column='meter_id', time_column='hour', value_column='value', 
+# 						quantile_cutoff_lower=0, quantile_cutoff_upper=1-quantile_cutoff)
+# 					df_aggregated = ls.privatize(epsilon=epsilon)
+# 					df_aggregated['population'] = self.label
+# 					df_aggregated['epsilon'] = epsilon
+# 					df_aggregated['quantile_cutoff'] = quantile_cutoff
+# 					df_aggregated['n_points'] = n_points
+# 					df_aggregated['span'] = (df_aggregated['private_max'] - df_aggregated['private_mean']) / df_aggregated['private_mean']
+					
+# 					self.db_client.load_df(df_aggregated, 'private_load_shapes', append=True)
 
 
 

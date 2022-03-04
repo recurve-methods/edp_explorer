@@ -1,23 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-
-   Copyright 2021 Recurve Analytics Inc.
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-
-"""
-
+#!/bin/env python3
 from cache import Cacheable
 import hashlib
 import pandas as pd
@@ -30,7 +11,6 @@ def population_hash():
 		text = f.read()
 	return hashlib.sha224(text.encode()).hexdigest()
 
-
 def populations_have_changed():
 	if not db.table_exists('load_hash'):
 		return True
@@ -39,26 +19,33 @@ def populations_have_changed():
 	return old_hash != new_hash
 	
 
-def data_hash():
-	with open('data/meter_time_series.csv', 'r') as f:
-		text = f.read()
-	return hashlib.sha224(text.encode()).hexdigest()
-
-
-def data_has_changed():
-	if not db.table_exists('data_hash'):
-		return True
-	old_hash = db.query_df('select hash from data_hash')['hash'].iloc[0]
-	new_hash = data_hash()
-	return old_hash != new_hash
-
-
-
-if not db.data_loaded() or populations_have_changed() or data_has_changed():
+if not db.data_loaded() or populations_have_changed():
 	print("Loading data")
-	load_data('data/meter_time_series.csv', 'electricity_kwh', 'datetime', 'meter_id', 'populations.json')
+	load_data('data/nrel/meter_time_series.csv', 'electricity_kwh', 'datetime', 'meter_id', 'populations.json')
 	df = pd.DataFrame({'hash': population_hash()}, index=[0])
 	db.load_df(df, 'load_hash')
 
 	print("Data loaded")
 
+# class PreCache(Cacheable):
+# 	def __init__(self, db_client):
+# 		self.db_client = db_client
+# 		super().__init__()
+# 		self.clear_cache()
+	
+# 	def private_load_shape(self, population, n_points, quantile_cutoff):
+# 		pop = BuiltPopulation(db_client=self.db_client, label=population)
+# 		def get():
+# 			return pop.private_load_shape(n_points, quantile_cutoff)
+# 		return self.cache_func(get, self.make_cache_key([population, n_points, quantile_cutoff]))
+
+# # pre-load each population so it's already cached 
+# c = PreCache(db)
+# print("Pre-loading populations")
+# pop_labels = db.query_df('select distinct population from population')['population']
+# for pop in pop_labels:
+# 	for n_points in [1,2,4,8,12,24]:
+# 		for quantile_cutoff in [0,0.01,0.02,0.03,0.04,0.05]:
+# 			c.private_load_shape(pop, n_points, quantile_cutoff)
+
+# print("Populations pre-loaded")

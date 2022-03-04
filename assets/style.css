@@ -1,0 +1,61 @@
+
+._dash-undo-redo { display: none; }
+
+h1 { font-size: 24px; }
+h2 { font-size: 20px; }
+h3 { font-size: 16px; }
+
+.brand { color: #67b5b3; display: inline-block; margin: 0px 20px 0 0; }
+.nav { padding: 15px; background-color: #121212; }
+.nav a { display: inline-block; margin-right: 15px; color: #777; text-decoration: none; font-size: 12px; }
+.nav a.active { color: #eee; border-bottom: 3px solid #4da1f1; }
+.headerContainer { background: #fafafa; border-bottom: 1px solid rgba(34,36,38,.15); padding: 20px 15px 10px 15px; }
+.headerSubtitle { color: #67b5b3; margin-top: 0;}
+.headerTitle { font-weight: 700; }
+.locationTitle { padding-right: 10px; }
+.yearTitle { padding-left: 10px; }
+.fancyLabel {}
+.fancyValue { padding-left: 10px; font-weight: 700; }
+.help { color: #a3a6ad; font-size: 85%; margin-top: -8px; }
+.inputsContainer { border-right: 1px solid rgba(34,36,38,.15); padding-right: 15px; }
+.numberEmphasisChart { text-align: center; color: #363649; padding-bottom: 40px; padding-top: 20px; border-bottom: 1px solid rgba(34,36,38,.15); } 
+.numberEmphasisChart h3 { font-size: 28px; }
+.resultsContainer { margin: 0; }
+.resultsContainer h2 { padding-left: 20px; }
+
+.rc-slider-tooltip-inner { background-color: white; color: #333; box-shadow: none; }
+.padded {padding: 0px 30px 10px 0px;}
+
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+._dash-loading-callback {
+  font-family: sans-serif;
+  padding-top: 50px;
+  color: rgb(90, 90, 90);
+
+  /* The banner */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  cursor: progress;
+
+  opacity: 0;
+  background-color: rgb(250, 250, 250);
+  /* Delay animation by 1s to prevent flashing 
+     and smoothly transition the animation over 0.5s 
+   */
+  -moz-animation: fadein 0.5s ease-in 1s forwards; /* Firefox */
+  -webkit-animation: fadein 0.5s ease-in 1s forwards; /* Safari and Chrome */
+  -o-animation: fadein 0.5s ease-in 1s forwards; /* Opera */
+    animation: fadein 0.5s ease-in 1s forwards;
+}
