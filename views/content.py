@@ -182,7 +182,7 @@ def content_layout(logos):
 
 
                 ], style={'width': '100%', 'pading': '10px'}),
-                dcc.Interval(id='trigger', interval=30000)
+                dcc.Interval(id='trigger', interval=60*60*24*1000)
             ], className="six columns inputsContainer")
         # html.Div([
         #     html.Img(src=logos[0], width=200),
